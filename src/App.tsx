@@ -7,28 +7,38 @@ import {
   Difficulty,
   raids,
   dungeons,
-  difficulties
+  difficulties,
 } from "./data/Activities.tsx";
 import "./App.css";
 import { darkTheme } from "./theme/Theme";
 import { ChipGroup } from "./components/ChipGroup";
 
 function App() {
-  const [selectedActivity, setSelectedActivity] = useState<Activity | null>(null);
-  const [selectedCheckpoint, setSelectedCheckpoint] = useState<ActivityCheckpoint | null>(null);
-  const [selectedDifficulty, setSelectedDifficulty] = useState<Difficulty | null>(null);
+  const [selectedActivity, setSelectedActivity] = useState<Activity | null>(
+    null,
+  );
+  const [selectedCheckpoint, setSelectedCheckpoint] =
+    useState<ActivityCheckpoint | null>(null);
+  const [selectedDifficulty, setSelectedDifficulty] =
+    useState<Difficulty | null>(null);
 
   const handleActivitySelected = (activity: Activity) => {
-    setSelectedActivity(prev => prev?.key === activity.key ? null : activity);
+    setSelectedActivity((prev) =>
+      prev?.key === activity.key ? null : activity,
+    );
     setSelectedCheckpoint(null);
   };
 
   const handleCheckpointSelected = (checkpoint: ActivityCheckpoint) => {
-    setSelectedCheckpoint(prev => prev?.key === checkpoint.key ? null : checkpoint);
+    setSelectedCheckpoint((prev) =>
+      prev?.key === checkpoint.key ? null : checkpoint,
+    );
   };
 
   const handleDifficultySelected = (difficulty: Difficulty) => {
-    setSelectedDifficulty(prev => prev?.key === difficulty.key ? null : difficulty);
+    setSelectedDifficulty((prev) =>
+      prev?.key === difficulty.key ? null : difficulty,
+    );
   };
 
   // TODO: set background based on selected activity
@@ -73,8 +83,7 @@ function App() {
         </header>
       </div>
     </ThemeProvider>
-  )
-    ;
+  );
 }
 
 export default App;

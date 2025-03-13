@@ -4,25 +4,22 @@ export class Activity implements Selectable {
   constructor(
     public key: string,
     public label: string,
-    public checkpoints: ActivityCheckpoint[] = []
-  ) {
-  }
+    public checkpoints: ActivityCheckpoint[] = [],
+  ) {}
 }
 
 export class ActivityCheckpoint implements Selectable {
   constructor(
     public key: string,
-    public label: string
-  ) {
-  }
+    public label: string,
+  ) {}
 }
 
 export class Difficulty implements Selectable {
   constructor(
     public key: string,
-    public label: string
-  ) {
-  }
+    public label: string,
+  ) {}
 }
 
 const singleChest = new ActivityCheckpoint("chest", "Chest");
@@ -37,7 +34,7 @@ export const raids: Activity[] = [
     new ActivityCheckpoint("confluxes", "Confluxes"),
     new ActivityCheckpoint("templar", "Templar"),
     new ActivityCheckpoint("gatekeeper", "Gatekeeper"),
-    new ActivityCheckpoint("atheon", "Atheon")
+    new ActivityCheckpoint("atheon", "Atheon"),
   ]),
   new Activity("kf", "King's Fall", [
     new ActivityCheckpoint("maze", "Maze"),
@@ -45,33 +42,31 @@ export const raids: Activity[] = [
     new ActivityCheckpoint("warpriest", "Warpriest"),
     new ActivityCheckpoint("golgoroth", "Golgoroth"),
     new ActivityCheckpoint("daughters", "Daughters"),
-    new ActivityCheckpoint("oryx", "Oryx")
+    new ActivityCheckpoint("oryx", "Oryx"),
   ]),
   new Activity("gos", "Garden of Salvation", [
     new ActivityCheckpoint("consecrated", "Consecrated Mind"),
-    new ActivityCheckpoint("sanctified", "Sanctified Mind")
+    new ActivityCheckpoint("sanctified", "Sanctified Mind"),
   ]),
   new Activity("lw", "Last Wish", [
     new ActivityCheckpoint("kalli", "Kalli"),
     new ActivityCheckpoint("shuro-chi", "Shuro-Chi"),
-    new ActivityCheckpoint("morgeth", "Morgeth")
+    new ActivityCheckpoint("morgeth", "Morgeth"),
   ]),
   new Activity("votd", "Vow of the Disciple", [...chestCheckpoints]),
-  new Activity("ce", "Crota's End", [
-    new ActivityCheckpoint("abyss", "Abyss")
-  ]),
+  new Activity("ce", "Crota's End", [new ActivityCheckpoint("abyss", "Abyss")]),
   new Activity("ron", "Root of Nightmares", [
     ...chestCheckpoints,
-    new ActivityCheckpoint("nezarec", "Nezarec")
+    new ActivityCheckpoint("nezarec", "Nezarec"),
   ]),
   new Activity("dsc", "Deep Stone Crypt", [
-    new ActivityCheckpoint("chest2", "Chest 2")
+    new ActivityCheckpoint("chest2", "Chest 2"),
   ]),
   new Activity("se", "Salvation's Edge", [
     ...chestCheckpoints,
     new ActivityCheckpoint("verity", "Verity"),
-    new ActivityCheckpoint("witness", "Witness")
-  ])
+    new ActivityCheckpoint("witness", "Witness"),
+  ]),
 ];
 
 export const dungeons: Activity[] = [
@@ -82,7 +77,7 @@ export const dungeons: Activity[] = [
   new Activity("sotw", "Spire of the Watcher", [...chestCheckpoints, boss]),
   new Activity("d", "Duality", [...chestCheckpoints]),
   new Activity("goa", "Grasp of Avarice", [...chestCheckpoints]),
-  new Activity("p", "Prophecy", [new ActivityCheckpoint("chests", "Chests")])
+  new Activity("p", "Prophecy", [new ActivityCheckpoint("chests", "Chests")]),
   // TODO: confirm checkpoints
   // new Activity("poh", "Pit of Heresy", []),
   // new Activity("st", "Shattered Throne", []),
@@ -90,5 +85,5 @@ export const dungeons: Activity[] = [
 
 export const difficulties: Difficulty[] = [
   new Difficulty("normal", "Normal"),
-  new Difficulty("master", "Master")
+  new Difficulty("master", "Master"),
 ];
