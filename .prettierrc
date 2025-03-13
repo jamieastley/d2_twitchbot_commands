@@ -1,0 +1,21 @@
+{
+  "trailingComma": "none",
+  "semi": true,
+  "plugins": [
+    "@ianvs/prettier-plugin-sort-imports",
+    "prettier-plugin-tailwindcss"
+  ],
+  "importOrder": [
+    "^(react/(.*)$)|^(react$)|^(react-native(.*)$)",
+    "^(next/(.*)$)|^(next$)",
+    "<THIRD_PARTY_MODULES>",
+    "^@/(.*)$",
+    "^[../]",
+    "^[./]"
+  ],
+  "tailwindFunctions": [
+    "clsx",
+    "cn"
+  ],
+  "tailwindStylesheet": "./src/styles.css"
+}
