@@ -1,4 +1,3 @@
-import React from "react";
 import { Selectable } from "../types/Selectable";
 import { Box, Chip, Stack, Typography } from "@mui/material";
 
@@ -32,6 +31,5 @@ export const ChipGroup = <T extends Selectable>({
         ))}
       </Box>
     </Stack>
-
   );
 };
