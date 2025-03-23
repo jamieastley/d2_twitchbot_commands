@@ -1,0 +1,32 @@
+{
+  "name": "D2 Twitch Bot Commands",
+  "description": "Command helper",
+  "version": "0.1.0",
+  "manifest_version": 2,
+  "browser_action": {
+    "default_popup": "index.html",
+    "default_title": "Open the popup"
+  },
+  "background": {
+    "scripts": [
+      "src/background.ts"
+    ],
+    "persistent": false,
+    "type": "module"
+  },
+  "content_scripts": [
+    {
+      "matches": ["*://*.twitch.tv/*"],
+      "js": ["src/background.ts"]
+    }
+  ],
+  "icons": {
+    "16": "icon/logo192.png",
+    "48": "icon/logo192.png",
+    "128": "icon/logo192.png"
+  },
+  "permissions": [
+    "activeTab",
+    "clipboardWrite"
+  ]
+}

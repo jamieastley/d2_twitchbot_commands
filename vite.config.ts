@@ -1,25 +1,15 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-import { viteStaticCopy } from 'vite-plugin-static-copy';
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+import webExtension from "vite-plugin-web-extension";
+
+const target = process.env.TARGET || "chrome";
 
 export default defineConfig({
   plugins: [
     react(),
-    viteStaticCopy({
-      targets: [
-        {
-          src: 'public/manifest.json',
-          dest: '.',
-        },
-      ],
+    webExtension({
+      manifest:
+        target == "chrome" ? "manifest.chrome.json" : "manifest.firefox.json",
     }),
   ],
-  build: {
-    outDir: 'build',
-    rollupOptions: {
-      input: {
-        main: './index.html',
-      },
-    },
-  },
 });

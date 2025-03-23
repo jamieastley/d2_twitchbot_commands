@@ -7,9 +7,19 @@
     "default_popup": "index.html",
     "default_title": "Open the popup"
   },
+  "sidebar_action": {
+    "default_panel": "index.html",
+    "default_title": "Open the popup"
+  },
+  "background": {
+    "service_worker": "src/scripts/service-worker/background.ts"
+  },
   "icons": {
     "16": "logo192.png",
     "48": "logo192.png",
     "128": "logo192.png"
-  }
+  },
+  "permissions": [
+    "activeTab"
+  ]
 }
