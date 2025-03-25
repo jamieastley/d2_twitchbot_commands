@@ -23,6 +23,11 @@ dist-ssr
 *.sln
 *.sw?
 
+# Testing
+coverage
+
 # Config files
 .webextrc
 .webextrc.*
+/tsconfig.tsbuildinfo
+/tsconfig.node.tsbuildinfo
