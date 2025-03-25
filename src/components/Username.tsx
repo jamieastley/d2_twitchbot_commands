@@ -27,6 +27,9 @@ export const Username = ({ onUsernameChange }: UsernameProps) => {
     const newUsername = event.target.value;
     setUsername(newUsername);
     localStorage.setItem(USERNAME_STORAGE_KEY, newUsername);
+    if (onUsernameChange) {
+      onUsernameChange(newUsername);
+    }
   };
 
   return (
