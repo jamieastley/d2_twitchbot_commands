@@ -17,4 +17,6 @@ jobs:
         with:
           auto-install: true
 
+      - run: pnpm install
+
       - run: pnpm test
