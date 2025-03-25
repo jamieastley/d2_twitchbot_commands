@@ -1,8 +1,6 @@
 import { useState, useEffect, ChangeEvent } from "react";
 import { TextField, Box, Typography } from "@mui/material";
-
-// Local storage key for the username
-const USERNAME_STORAGE_KEY = "player_username";
+import { GetUsername, StoreUsername, ValidateUsername } from "../utils/UsernameManager";
 
 interface UsernameProps {
   onUsernameChange?: (username: string) => void;
@@ -13,7 +11,7 @@ export const Username = ({ onUsernameChange }: UsernameProps) => {
 
   // Load username from localStorage on component mount
   useEffect(() => {
-    const storedUsername = localStorage.getItem(USERNAME_STORAGE_KEY);
+    const storedUsername = GetUsername();
     if (storedUsername) {
       setUsername(storedUsername);
       if (onUsernameChange) {
@@ -26,9 +24,10 @@ export const Username = ({ onUsernameChange }: UsernameProps) => {
   const handleUsernameChange = (event: ChangeEvent<HTMLInputElement>) => {
     const newUsername = event.target.value;
     setUsername(newUsername);
-    localStorage.setItem(USERNAME_STORAGE_KEY, newUsername);
-    if (onUsernameChange) {
+
+    if (ValidateUsername(newUsername) && onUsernameChange) {
       onUsernameChange(newUsername);
+      StoreUsername(newUsername);
     }
   };
 
@@ -40,7 +39,7 @@ export const Username = ({ onUsernameChange }: UsernameProps) => {
       <TextField
         fullWidth
         variant="outlined"
-        placeholder="Enter your Discord username"
+        placeholder="LeeroyJenkins#1234"
         value={username}
         onChange={handleUsernameChange}
         size="small"
