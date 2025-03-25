@@ -1,0 +1,7 @@
+{
+  "include": ["src", "./jest.setup.ts"],
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "jsx": "react-jsx"
+  }
+}
