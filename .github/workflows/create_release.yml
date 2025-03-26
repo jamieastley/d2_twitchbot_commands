@@ -26,11 +26,13 @@ jobs:
           auto-install: true
       - run: pnpm install
       - run: pnpm build:${{ matrix.browser }}
-      - name: Archive production artifacts
+      - name: "Create zip archive"
+        run: zip -r ${{matrix.browser}}_extension.zip dist/${{ matrix.browser }}
+      - name: Archive production artifact
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.browser }}_extension
-          path: dist/${{ matrix.browser }}
+          path: ${{ matrix.browser }}_extension.zip
 
   publish:
     name: Publish build artifacts
@@ -45,10 +47,11 @@ jobs:
       - name: "List files"
         run: ls -R
 
-#      - name: Create GitHub Release
-#        uses: softprops/action-gh-release@v2
-#        with:
-#          generate_release_notes: true
-#          files: |
-#            firefox_extension.zip
-#            chrome_extension.zip
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true
+          prerelease: true
+          files: |
+            firefox_extension.zip
+            chrome_extension.zip
