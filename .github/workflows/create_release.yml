@@ -52,5 +52,5 @@ jobs:
         with:
           generate_release_notes: true
           files: |
-            firefox_extension
-            chrome_extension
+            firefox_extension.zip
+            chrome_extension.zip
