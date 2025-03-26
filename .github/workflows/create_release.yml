@@ -36,6 +36,8 @@ jobs:
     name: Publish build artifacts
     needs: build
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: "Download Firefox build"
         uses: actions/download-artifact@v4
