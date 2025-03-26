@@ -31,7 +31,7 @@ jobs:
       - name: Archive production artifact
         uses: actions/upload-artifact@v4
         with:
-          name: builds
+          name: ${{ matrix.browser }}_extension.zip
           path: ${{ matrix.browser }}_extension.zip
 
   publish:
@@ -54,5 +54,5 @@ jobs:
           tag_name: v0.1.99
           prerelease: true
           files: |
-            builds/firefox_extension.zip
-            builds/chrome_extension.zip
+            firefox_extension.zip
+            chrome_extension.zip
