@@ -1,8 +1,8 @@
+name: "Setup environment"
+
 runs:
   using: composite
-  name: "Setup environment"
   steps:
-    - uses: 'actions/checkout@v4'
     - uses: 'moonrepo/setup-toolchain@v0'
       with:
         auto-install: true

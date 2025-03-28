@@ -8,8 +8,8 @@ on:
 jobs:
   test:
     steps:
-      - name: "Setup environment"
-        uses: ./.github/actions/setup
+      - uses: 'actions/checkout@v4'
+      - uses: ./.github/actions/setup
       - run: pnpm test
 
   build:
@@ -20,8 +20,8 @@ jobs:
       matrix:
         browser: [ chrome, firefox ]
     steps:
-      - name: "Setup environment"
-        uses: ./.github/actions/setup
+      - uses: 'actions/checkout@v4'
+      - uses: ./.github/actions/setup
       - run: pnpm build:${{ matrix.browser }}
       - name: "Create zip archive"
         run: |
