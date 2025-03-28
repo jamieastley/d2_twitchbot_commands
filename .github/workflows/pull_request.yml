@@ -5,7 +5,7 @@ on:
 
 jobs:
   test:
-    uses: ./.github/workflows/setup_run_pnpm.yml
-    name: "Run tests"
-    with:
-      pnpm_command: "test"
+    - name: "Setup environment"
+      uses: ./.github/workflows/setup_env.yml
+    - name: "Run tests"
+      run: pnpm test

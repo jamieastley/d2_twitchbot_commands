@@ -1,10 +1,5 @@
 on:
   workflow_call:
-    inputs:
-      pnpm_command:
-        description: 'The command to run with pnpm'
-        required: true
-        type: string
 
 jobs:
   initialise:
@@ -15,4 +10,3 @@ jobs:
         with:
           auto-install: true
       - run: pnpm install
-      - run: pnpm ${{ inputs.pnpm_command }}
