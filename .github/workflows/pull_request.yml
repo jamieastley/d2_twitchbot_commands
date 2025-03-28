@@ -8,5 +8,5 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: "Setup environment"
-        uses: ./.github/workflows/setup_env.yml
+        uses: ./.github/actions/setup
       - run: pnpm test
