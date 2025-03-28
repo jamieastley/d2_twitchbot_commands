@@ -1,12 +1,10 @@
-on:
-  workflow_call:
-
-jobs:
-  initialise:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: 'actions/checkout@v4'
-      - uses: 'moonrepo/setup-toolchain@v0'
-        with:
-          auto-install: true
-      - run: pnpm install
+runs:
+  using: composite
+  name: "Setup environment"
+  steps:
+    - uses: 'actions/checkout@v4'
+    - uses: 'moonrepo/setup-toolchain@v0'
+      with:
+        auto-install: true
+    - run: pnpm install
+      shell: bash

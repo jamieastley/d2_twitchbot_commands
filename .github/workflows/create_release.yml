@@ -7,9 +7,10 @@ on:
 
 jobs:
   test:
-    - name: "Setup environment"
-      uses: ./.github/workflows/setup_env.yml
-    - run: pnpm test
+    steps:
+      - name: "Setup environment"
+        uses: ./.github/workflows/setup_env.yml
+      - run: pnpm test
 
   build:
     name: "Build ${{ matrix.browser }} extension"
