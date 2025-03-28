@@ -7,10 +7,10 @@ on:
 
 jobs:
   test:
-    uses: ./.github/workflows/setup_run_pnpm.yml
-    name: "Run tests"
-    with:
-      pnpm_command: "test"
+    steps:
+      - uses: 'actions/checkout@v4'
+      - uses: ./.github/actions/setup
+      - run: pnpm test
 
   build:
     name: "Build ${{ matrix.browser }} extension"
@@ -21,10 +21,7 @@ jobs:
         browser: [ chrome, firefox ]
     steps:
       - uses: 'actions/checkout@v4'
-      - uses: 'moonrepo/setup-toolchain@v0'
-        with:
-          auto-install: true
-      - run: pnpm install
+      - uses: ./.github/actions/setup
       - run: pnpm build:${{ matrix.browser }}
       - name: "Create zip archive"
         run: |
