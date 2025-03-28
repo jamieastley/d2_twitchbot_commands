@@ -27,7 +27,9 @@ jobs:
       - run: pnpm install
       - run: pnpm build:${{ matrix.browser }}
       - name: "Create zip archive"
-        run: zip -r ${{matrix.browser}}_extension.zip dist/${{ matrix.browser }}
+        run: |
+          cd dist/${{ matrix.browser }}
+          zip -r ../../${{matrix.browser}}_extension.zip .
       - name: Archive production artifact
         uses: actions/upload-artifact@v4
         with:
