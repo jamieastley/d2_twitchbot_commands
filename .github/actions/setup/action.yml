@@ -1,7 +1,6 @@
 name: "Setup environment"
 
 runs:
-  name: "Setup environment"
   using: composite
   steps:
     - uses: 'moonrepo/setup-toolchain@v0'
