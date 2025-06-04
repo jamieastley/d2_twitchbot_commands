@@ -1,5 +1,5 @@
 import { render, screen, fireEvent } from "@testing-library/react";
-import { Username } from "./Username";
+import { UsernameForm } from "./UsernameForm";
 import * as UsernameManager from "../utils/UsernameManager";
 
 // Mock the UsernameManager module
@@ -15,7 +15,7 @@ describe("Username component", () => {
   });
 
   test("renders username input field", () => {
-    render(<Username />);
+    render(<UsernameForm />);
     expect(screen.getByPlaceholderText("LeeroyJenkins#1234")).toBeDefined();
   });
 });

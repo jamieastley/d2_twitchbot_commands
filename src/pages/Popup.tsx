@@ -1,4 +1,4 @@
-import { useReducer, useState } from "react";
+import { useReducer, useState, useEffect } from "react";
 import { Button, ThemeProvider } from "@mui/material";
 import { Stack } from "@mui/material";
 import {
@@ -12,8 +12,9 @@ import {
 import "./Popup.css";
 import { darkTheme } from "../theme/Theme";
 import { ChipGroup } from "../components/ChipGroup";
-import { Username } from "../components/Username";
+import { UsernameForm } from "../components/UsernameForm";
 import { SetClipboardValue } from "../utils/ClipboardManager";
+import { ValidateUsername, GetUsername } from "../utils/UsernameManager";
 
 // Define state and action types
 type SelectionState = {
@@ -80,6 +81,8 @@ function selectionReducer(state: SelectionState, action: SelectionAction): Selec
 }
 
 function App() {
+  const [usernameSubmitted, setUsernameSubmitted] = useState<boolean>(false);
+  const [username, setUsername] = useState<string>("");
   const [state, dispatch] = useReducer(selectionReducer, {
     selectedActivity: null,
     selectedCheckpoint: null,
@@ -87,6 +90,15 @@ function App() {
     username: "",
     isValid: false,
   });
+
+  // Check for stored username on component mount
+  useEffect(() => {
+    const storedUsername = GetUsername();
+    if (storedUsername && ValidateUsername(storedUsername)) {
+      dispatch({ type: "SET_USERNAME", payload: storedUsername });
+      setUsernameSubmitted(true);
+    }
+  }, []);
 
   const handleActivitySelected = (activity: Activity) => {
     dispatch({
@@ -109,8 +121,15 @@ function App() {
     });
   };
 
-  const handleUsernameChange = (newUsername: string) => {
+  const handleUsernameSet = (newUsername: string) => {
     dispatch({ type: "SET_USERNAME", payload: newUsername });
+  };
+
+  const handleUsernameSubmit = (username: string) => {
+    if (ValidateUsername(username)) {
+      dispatch({ type: "SET_USERNAME", payload: username });
+      setUsernameSubmitted(true);
+    }
   };
 
   const handleConcatenateKeys = () => {
@@ -128,48 +147,68 @@ function App() {
     <ThemeProvider theme={darkTheme}>
       <div className="App">
         <header className="App-header">
-          <Username onUsernameChange={handleUsernameChange} />
-          <Stack spacing={2}>
-            <ChipGroup
-              sectionTitle="Raids"
-              chips={raids}
-              selectedChip={state.selectedActivity}
-              onChipClick={handleActivitySelected}
-            />
-            <ChipGroup
-              sectionTitle="Dungeons"
-              chips={dungeons}
-              selectedChip={state.selectedActivity}
-              onChipClick={handleActivitySelected}
-            />
-            {state.selectedActivity && state.selectedActivity.checkpoints.length > 0 && (
+          {!usernameSubmitted ? (
+            // Username input screen
+            <div>
+              <UsernameForm onUsernameSet={handleUsernameSet} />
+            </div>
+          ) : (
+            // Activity selection screen
+            <Stack spacing={2}>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  marginBottom: "16px",
+                }}
+              >
+                <div>Username: {state.username}</div>
+                <Button variant="text" size="small" onClick={() => setUsernameSubmitted(false)}>
+                  Change
+                </Button>
+              </div>
               <ChipGroup
-                sectionTitle="Checkpoints"
-                chips={state.selectedActivity.checkpoints}
-                selectedChip={state.selectedCheckpoint}
-                onChipClick={handleCheckpointSelected}
+                sectionTitle="Raids"
+                chips={raids}
+                selectedChip={state.selectedActivity}
+                onChipClick={handleActivitySelected}
               />
-            )}
-            {state.selectedActivity && (
               <ChipGroup
-                sectionTitle="Difficulty"
-                chips={difficulties}
-                selectedChip={state.selectedDifficulty}
-                onChipClick={handleDifficultySelected}
+                sectionTitle="Dungeons"
+                chips={dungeons}
+                selectedChip={state.selectedActivity}
+                onChipClick={handleActivitySelected}
               />
-            )}
+              {state.selectedActivity && state.selectedActivity.checkpoints.length > 0 && (
+                <ChipGroup
+                  sectionTitle="Checkpoints"
+                  chips={state.selectedActivity.checkpoints}
+                  selectedChip={state.selectedCheckpoint}
+                  onChipClick={handleCheckpointSelected}
+                />
+              )}
+              {state.selectedActivity && (
+                <ChipGroup
+                  sectionTitle="Difficulty"
+                  chips={difficulties}
+                  selectedChip={state.selectedDifficulty}
+                  onChipClick={handleDifficultySelected}
+                />
+              )}
 
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleConcatenateKeys}
-              disabled={!state.isValid}
-              size={"medium"}
-              sx={{ mt: 2, width: "auto" }}
-            >
-              Queue for Activity
-            </Button>
-          </Stack>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleConcatenateKeys}
+                disabled={!state.isValid}
+                size={"medium"}
+                sx={{ mt: 2, width: "auto" }}
+              >
+                Queue for Activity
+              </Button>
+            </Stack>
+          )}
         </header>
       </div>
     </ThemeProvider>

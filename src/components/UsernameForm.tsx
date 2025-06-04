@@ -1,38 +1,47 @@
 import { useState, useEffect, ChangeEvent } from "react";
-import { TextField, Box, Typography } from "@mui/material";
+import { TextField, Box, Typography, Button } from "@mui/material";
 import { GetUsername, StoreUsername, ValidateUsername } from "../utils/UsernameManager";
 
 interface UsernameProps {
-  onUsernameChange?: (username: string) => void;
+  onUsernameSet?: (username: string) => void;
 }
 
-export const Username = ({ onUsernameChange }: UsernameProps) => {
+export const UsernameForm = ({ onUsernameSet }: UsernameProps) => {
   const [username, setUsername] = useState<string>("");
+  const isValidUsername = ValidateUsername(username);
 
   // Load username from localStorage on component mount
   useEffect(() => {
     const storedUsername = GetUsername();
     if (storedUsername) {
       setUsername(storedUsername);
-      if (onUsernameChange) {
-        onUsernameChange(storedUsername);
+      if (onUsernameSet) {
+        onUsernameSet(storedUsername);
       }
     }
   }, []);
 
   // Handle username changes and update localStorage
   const handleUsernameChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const newUsername = event.target.value;
-    setUsername(newUsername);
+    setUsername(event.target.value);
+  };
 
-    if (ValidateUsername(newUsername) && onUsernameChange) {
-      onUsernameChange(newUsername);
-      StoreUsername(newUsername);
+  const handleUsernameSubmit = (username: string) => {
+    const trimmedUsername = username.trim();
+    if (ValidateUsername(trimmedUsername)) {
+      StoreUsername(trimmedUsername);
     }
   };
 
   return (
-    <Box sx={{ mb: 2 }}>
+    <Box
+      sx={{
+        mb: 2,
+        display: "flex",
+        flexDirection: "column",
+        width: 250,
+      }}
+    >
       <Typography variant="h6" align="left" sx={{ alignSelf: "flex-start", mb: 1 }}>
         Bungie Username
       </Typography>
@@ -49,6 +58,23 @@ export const Username = ({ onUsernameChange }: UsernameProps) => {
           },
         }}
       />
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+        }}
+      >
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => handleUsernameSubmit(username)}
+          disabled={!isValidUsername}
+          size={"medium"}
+          sx={{ mt: 2 }}
+        >
+          Save
+        </Button>
+      </Box>
     </Box>
   );
 };
