@@ -38,6 +38,7 @@ export const UsernameForm = ({ onUsernameSubmitted }: UsernameProps) => {
         Bungie Username
       </Typography>
       <form
+        role={"username-form"}
         onSubmit={(e) => {
           e.preventDefault();
           handleUsernameSubmit(usernameInput);
@@ -46,6 +47,14 @@ export const UsernameForm = ({ onUsernameSubmitted }: UsernameProps) => {
         <TextField
           fullWidth
           variant="outlined"
+          id="username-input"
+          slotProps={{
+            htmlInput: {
+              "data-testid": "username-input",
+            },
+            inputLabel: { "aria-label": "Bungie Username" },
+          }}
+          label="Bungie username"
           placeholder="LeeroyJenkins#1234"
           value={usernameInput}
           onChange={handleUsernameChange}
