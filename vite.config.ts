@@ -2,7 +2,8 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import webExtension, { readJsonFile } from "vite-plugin-web-extension";
 
-const target = process.env.TARGET || "chrome";
+const target =
+  process.env.TARGET && process.env.TARGET.trim() !== "" ? process.env.TARGET : "chrome";
 
 function generateManifest() {
   const manifest = readJsonFile("src/manifest.json");

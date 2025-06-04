@@ -7,7 +7,7 @@
     "dev": "vite",
     "dev:firefox": "TARGET=firefox vite dev",
     "dev:chrome": "TARGET=chrome vite dev",
-    "build:chrome": "tsc && vite build",
+    "build:chrome": "tsc && TARGET=chrome vite build",
     "build:firefox": "tsc -b && TARGET=firefox vite build",
     "prettier": "prettier --write .",
     "prettier:check": "prettier --check .",

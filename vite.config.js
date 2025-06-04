@@ -27,4 +27,7 @@ export default defineConfig({
             manifest: generateManifest,
         }),
     ],
+    build: {
+        outDir: "dist/" + target,
+    },
 });
