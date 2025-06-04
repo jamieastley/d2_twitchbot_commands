@@ -1,4 +1,4 @@
-import { useReducer, useState, useEffect } from "react";
+import { useReducer, useState, useEffect, useMemo } from "react";
 import { Button, ThemeProvider } from "@mui/material";
 import { Stack } from "@mui/material";
 import {
@@ -14,22 +14,25 @@ import { darkTheme } from "../theme/Theme";
 import { ChipGroup } from "../components/ChipGroup";
 import { UsernameForm } from "../components/UsernameForm";
 import { SetClipboardValue } from "../utils/ClipboardManager";
-import { ValidateUsername, GetUsername } from "../utils/UsernameManager";
+import {
+  ValidateUsername,
+  GetUsername,
+  ClearUsername,
+  StoreUsername,
+} from "../utils/UsernameManager";
 
 // Define state and action types
 type SelectionState = {
   selectedActivity: Activity | null;
   selectedCheckpoint: ActivityCheckpoint | null;
   selectedDifficulty: Difficulty | null;
-  username: string;
   isValid: boolean;
 };
 
 type SelectionAction =
   | { type: "SET_ACTIVITY"; payload: Activity | null }
   | { type: "SET_CHECKPOINT"; payload: ActivityCheckpoint | null }
-  | { type: "SET_DIFFICULTY"; payload: Difficulty | null }
-  | { type: "SET_USERNAME"; payload: string };
+  | { type: "SET_DIFFICULTY"; payload: Difficulty | null };
 
 function selectionReducer(state: SelectionState, action: SelectionAction): SelectionState {
   let newState: SelectionState;
@@ -58,45 +61,45 @@ function selectionReducer(state: SelectionState, action: SelectionAction): Selec
       };
       break;
 
-    case "SET_USERNAME":
-      newState = {
-        ...state,
-        username: action.payload,
-      };
-      break;
-
     default:
       return state;
   }
 
   // Calculate validity after any state change
   newState.isValid = Boolean(
-    newState.selectedActivity &&
-      newState.selectedCheckpoint &&
-      newState.selectedDifficulty &&
-      newState.username.trim() !== ""
+    newState.selectedActivity && newState.selectedCheckpoint && newState.selectedDifficulty
   );
 
   return newState;
 }
 
 function App() {
-  const [usernameSubmitted, setUsernameSubmitted] = useState<boolean>(false);
   const [username, setUsername] = useState<string>("");
+  const isUsernameSet = useMemo(() => {
+    const trimmedUsername = username.trim();
+    return trimmedUsername !== "" && ValidateUsername(trimmedUsername);
+  }, [username]);
+
+  // Load username from localStorage on component mount
+  useEffect(() => {
+    const storedUsername = GetUsername();
+    if (storedUsername) {
+      setUsername(storedUsername);
+    }
+  }, []);
+
   const [state, dispatch] = useReducer(selectionReducer, {
     selectedActivity: null,
     selectedCheckpoint: null,
     selectedDifficulty: null,
-    username: "",
     isValid: false,
   });
 
   // Check for stored username on component mount
   useEffect(() => {
     const storedUsername = GetUsername();
-    if (storedUsername && ValidateUsername(storedUsername)) {
-      dispatch({ type: "SET_USERNAME", payload: storedUsername });
-      setUsernameSubmitted(true);
+    if (storedUsername) {
+      setUsername(storedUsername);
     }
   }, []);
 
@@ -122,14 +125,13 @@ function App() {
   };
 
   const handleUsernameSet = (newUsername: string) => {
-    dispatch({ type: "SET_USERNAME", payload: newUsername });
+    StoreUsername(newUsername);
+    setUsername(newUsername);
   };
 
-  const handleUsernameSubmit = (username: string) => {
-    if (ValidateUsername(username)) {
-      dispatch({ type: "SET_USERNAME", payload: username });
-      setUsernameSubmitted(true);
-    }
+  const handleChangeUsername = () => {
+    ClearUsername();
+    setUsername("");
   };
 
   const handleConcatenateKeys = () => {
@@ -137,7 +139,7 @@ function App() {
     if (state.selectedActivity) keys.push(state.selectedActivity.key);
     if (state.selectedCheckpoint) keys.push(state.selectedCheckpoint.key);
     if (state.selectedDifficulty) keys.push(state.selectedDifficulty.key);
-    if (state.username) keys.push(state.username);
+    if (username) keys.push(username);
 
     const concatenated = keys.join(" ");
     SetClipboardValue(concatenated);
@@ -147,10 +149,10 @@ function App() {
     <ThemeProvider theme={darkTheme}>
       <div className="App">
         <header className="App-header">
-          {!usernameSubmitted ? (
+          {!isUsernameSet ? (
             // Username input screen
             <div>
-              <UsernameForm onUsernameSet={handleUsernameSet} />
+              <UsernameForm onUsernameSubmitted={handleUsernameSet} />
             </div>
           ) : (
             // Activity selection screen
@@ -163,8 +165,8 @@ function App() {
                   marginBottom: "16px",
                 }}
               >
-                <div>Username: {state.username}</div>
-                <Button variant="text" size="small" onClick={() => setUsernameSubmitted(false)}>
+                <div>Username: {username}</div>
+                <Button variant="text" size="small" onClick={() => handleChangeUsername()}>
                   Change
                 </Button>
               </div>
@@ -205,7 +207,7 @@ function App() {
                 size={"medium"}
                 sx={{ mt: 2, width: "auto" }}
               >
-                Queue for Activity
+                Copy to Clipboard
               </Button>
             </Stack>
           )}

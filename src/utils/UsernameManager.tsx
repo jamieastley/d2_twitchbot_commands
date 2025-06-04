@@ -10,6 +10,10 @@ export function StoreUsername(username: string) {
   localStorage.setItem(USERNAME_STORAGE_KEY, username);
 }
 
+export function ClearUsername() {
+  localStorage.removeItem(USERNAME_STORAGE_KEY);
+}
+
 // Validates the username to ensure the pattern is correct and matches the expected format
 // of <name>#<4-digit number>
 export function ValidateUsername(username: string) {
