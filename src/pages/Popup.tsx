@@ -1,4 +1,4 @@
-import { useReducer, useState } from "react";
+import { useReducer, useState, useEffect, useMemo } from "react";
 import { Button, ThemeProvider } from "@mui/material";
 import { Stack } from "@mui/material";
 import {
@@ -12,23 +12,27 @@ import {
 import "./Popup.css";
 import { darkTheme } from "../theme/Theme";
 import { ChipGroup } from "../components/ChipGroup";
-import { Username } from "../components/Username";
+import { UsernameForm } from "../components/UsernameForm";
 import { SetClipboardValue } from "../utils/ClipboardManager";
+import {
+  ValidateUsername,
+  GetUsername,
+  ClearUsername,
+  StoreUsername,
+} from "../utils/UsernameManager";
 
 // Define state and action types
 type SelectionState = {
   selectedActivity: Activity | null;
   selectedCheckpoint: ActivityCheckpoint | null;
   selectedDifficulty: Difficulty | null;
-  username: string;
   isValid: boolean;
 };
 
 type SelectionAction =
   | { type: "SET_ACTIVITY"; payload: Activity | null }
   | { type: "SET_CHECKPOINT"; payload: ActivityCheckpoint | null }
-  | { type: "SET_DIFFICULTY"; payload: Difficulty | null }
-  | { type: "SET_USERNAME"; payload: string };
+  | { type: "SET_DIFFICULTY"; payload: Difficulty | null };
 
 function selectionReducer(state: SelectionState, action: SelectionAction): SelectionState {
   let newState: SelectionState;
@@ -57,36 +61,47 @@ function selectionReducer(state: SelectionState, action: SelectionAction): Selec
       };
       break;
 
-    case "SET_USERNAME":
-      newState = {
-        ...state,
-        username: action.payload,
-      };
-      break;
-
     default:
       return state;
   }
 
   // Calculate validity after any state change
   newState.isValid = Boolean(
-    newState.selectedActivity &&
-      newState.selectedCheckpoint &&
-      newState.selectedDifficulty &&
-      newState.username.trim() !== ""
+    newState.selectedActivity && newState.selectedCheckpoint && newState.selectedDifficulty
   );
 
   return newState;
 }
 
 function App() {
+  const [username, setUsername] = useState<string>("");
+  const isUsernameSet = useMemo(() => {
+    const trimmedUsername = username.trim();
+    return trimmedUsername !== "" && ValidateUsername(trimmedUsername);
+  }, [username]);
+
+  // Load username from localStorage on component mount
+  useEffect(() => {
+    const storedUsername = GetUsername();
+    if (storedUsername) {
+      setUsername(storedUsername);
+    }
+  }, []);
+
   const [state, dispatch] = useReducer(selectionReducer, {
     selectedActivity: null,
     selectedCheckpoint: null,
     selectedDifficulty: null,
-    username: "",
     isValid: false,
   });
+
+  // Check for stored username on component mount
+  useEffect(() => {
+    const storedUsername = GetUsername();
+    if (storedUsername) {
+      setUsername(storedUsername);
+    }
+  }, []);
 
   const handleActivitySelected = (activity: Activity) => {
     dispatch({
@@ -109,8 +124,14 @@ function App() {
     });
   };
 
-  const handleUsernameChange = (newUsername: string) => {
-    dispatch({ type: "SET_USERNAME", payload: newUsername });
+  const handleUsernameSet = (newUsername: string) => {
+    StoreUsername(newUsername);
+    setUsername(newUsername);
+  };
+
+  const handleChangeUsername = () => {
+    ClearUsername();
+    setUsername("");
   };
 
   const handleConcatenateKeys = () => {
@@ -118,7 +139,7 @@ function App() {
     if (state.selectedActivity) keys.push(state.selectedActivity.key);
     if (state.selectedCheckpoint) keys.push(state.selectedCheckpoint.key);
     if (state.selectedDifficulty) keys.push(state.selectedDifficulty.key);
-    if (state.username) keys.push(state.username);
+    if (username) keys.push(username);
 
     const concatenated = keys.join(" ");
     SetClipboardValue(concatenated);
@@ -128,48 +149,68 @@ function App() {
     <ThemeProvider theme={darkTheme}>
       <div className="App">
         <header className="App-header">
-          <Username onUsernameChange={handleUsernameChange} />
-          <Stack spacing={2}>
-            <ChipGroup
-              sectionTitle="Raids"
-              chips={raids}
-              selectedChip={state.selectedActivity}
-              onChipClick={handleActivitySelected}
-            />
-            <ChipGroup
-              sectionTitle="Dungeons"
-              chips={dungeons}
-              selectedChip={state.selectedActivity}
-              onChipClick={handleActivitySelected}
-            />
-            {state.selectedActivity && state.selectedActivity.checkpoints.length > 0 && (
+          {!isUsernameSet ? (
+            // Username input screen
+            <div>
+              <UsernameForm onUsernameSubmitted={handleUsernameSet} />
+            </div>
+          ) : (
+            // Activity selection screen
+            <Stack spacing={2}>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  marginBottom: "16px",
+                }}
+              >
+                <div>Username: {username}</div>
+                <Button variant="text" size="small" onClick={() => handleChangeUsername()}>
+                  Change
+                </Button>
+              </div>
               <ChipGroup
-                sectionTitle="Checkpoints"
-                chips={state.selectedActivity.checkpoints}
-                selectedChip={state.selectedCheckpoint}
-                onChipClick={handleCheckpointSelected}
+                sectionTitle="Raids"
+                chips={raids}
+                selectedChip={state.selectedActivity}
+                onChipClick={handleActivitySelected}
               />
-            )}
-            {state.selectedActivity && (
               <ChipGroup
-                sectionTitle="Difficulty"
-                chips={difficulties}
-                selectedChip={state.selectedDifficulty}
-                onChipClick={handleDifficultySelected}
+                sectionTitle="Dungeons"
+                chips={dungeons}
+                selectedChip={state.selectedActivity}
+                onChipClick={handleActivitySelected}
               />
-            )}
+              {state.selectedActivity && state.selectedActivity.checkpoints.length > 0 && (
+                <ChipGroup
+                  sectionTitle="Checkpoints"
+                  chips={state.selectedActivity.checkpoints}
+                  selectedChip={state.selectedCheckpoint}
+                  onChipClick={handleCheckpointSelected}
+                />
+              )}
+              {state.selectedActivity && (
+                <ChipGroup
+                  sectionTitle="Difficulty"
+                  chips={difficulties}
+                  selectedChip={state.selectedDifficulty}
+                  onChipClick={handleDifficultySelected}
+                />
+              )}
 
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleConcatenateKeys}
-              disabled={!state.isValid}
-              size={"medium"}
-              sx={{ mt: 2, width: "auto" }}
-            >
-              Queue for Activity
-            </Button>
-          </Stack>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleConcatenateKeys}
+                disabled={!state.isValid}
+                size={"medium"}
+                sx={{ mt: 2, width: "auto" }}
+              >
+                Copy to Clipboard
+              </Button>
+            </Stack>
+          )}
         </header>
       </div>
     </ThemeProvider>
