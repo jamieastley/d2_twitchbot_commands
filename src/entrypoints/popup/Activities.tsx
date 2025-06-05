@@ -1,5 +1,3 @@
-import { Selectable } from "../types/Selectable";
-
 export class Activity implements Selectable {
   constructor(
     public key: string,
