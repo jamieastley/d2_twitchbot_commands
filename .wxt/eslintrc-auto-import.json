@@ -1,0 +1,27 @@
+{
+  "globals": {
+    "ChipGroup": true,
+    "ChipOption": true,
+    "ClearUsername": true,
+    "ContentScriptContext": true,
+    "GetUsername": true,
+    "InvalidMatchPattern": true,
+    "MatchPattern": true,
+    "Selectable": true,
+    "SetClipboardValue": true,
+    "StoreUsername": true,
+    "UsernameForm": true,
+    "ValidateUsername": true,
+    "browser": true,
+    "createIframeUi": true,
+    "createIntegratedUi": true,
+    "createShadowRootUi": true,
+    "darkTheme": true,
+    "defineBackground": true,
+    "defineConfig": true,
+    "defineContentScript": true,
+    "defineUnlistedScript": true,
+    "fakeBrowser": true,
+    "storage": true
+  }
+}

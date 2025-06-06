@@ -1,0 +1,3 @@
+- migrate to wtx
+- fix popup size on Chrome
+- create XPI for Firefox

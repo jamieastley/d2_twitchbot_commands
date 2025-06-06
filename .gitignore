@@ -31,3 +31,4 @@ coverage
 .webextrc.*
 /tsconfig.tsbuildinfo
 /tsconfig.node.tsbuildinfo
+web-ext.config.ts

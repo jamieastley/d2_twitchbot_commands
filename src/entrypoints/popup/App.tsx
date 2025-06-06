@@ -8,18 +8,8 @@ import {
   raids,
   dungeons,
   difficulties,
-} from "../data/Activities";
-import "./Popup.css";
-import { darkTheme } from "../theme/Theme";
-import { ChipGroup } from "../components/ChipGroup";
-import { UsernameForm } from "../components/UsernameForm";
-import { SetClipboardValue } from "../utils/ClipboardManager";
-import {
-  ValidateUsername,
-  GetUsername,
-  ClearUsername,
-  StoreUsername,
-} from "../utils/UsernameManager";
+} from "./Activities";
+import "./App.css";
 
 // Define state and action types
 type SelectionState = {
