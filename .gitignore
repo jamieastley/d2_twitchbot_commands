@@ -26,9 +26,13 @@ dist-ssr
 # Testing
 coverage
 
+# local env
+web-ext.config.ts
+.wxt
+.env
+
 # Config files
 .webextrc
 .webextrc.*
 /tsconfig.tsbuildinfo
 /tsconfig.node.tsbuildinfo
-web-ext.config.ts
