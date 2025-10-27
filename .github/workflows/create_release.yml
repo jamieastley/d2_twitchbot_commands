@@ -29,7 +29,7 @@ jobs:
           cd dist/${{ matrix.browser }}
           zip -r ../../${{matrix.browser}}_extension.zip .
       - name: Archive production artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: ${{ matrix.browser }}
           path: ${{ matrix.browser }}_extension.zip
